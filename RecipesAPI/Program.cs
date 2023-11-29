@@ -1,3 +1,10 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+
+using RecipesAPI.Data;
+using RecipesAPI.Models.Entities;
+using RecipesAPI.Models.Interfaces;
+using RecipesAPI.Models.Services;
 
 namespace RecipesAPI
 {
@@ -7,6 +14,16 @@ namespace RecipesAPI
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            string connString = builder.Configuration.GetConnectionString("DefaultConnection");
+            builder.Services
+               .AddDbContext<RecipesDbContext>(options => options.UseSqlServer(connString));
+
+            builder.Services.AddTransient<IUser, UserService>();
+
+            builder.Services.AddIdentity<User, IdentityRole>(options =>
+            {
+                options.User.RequireUniqueEmail = true;
+            }).AddEntityFrameworkStores<RecipesDbContext>();
             // Add services to the container.
 
             builder.Services.AddControllers();
