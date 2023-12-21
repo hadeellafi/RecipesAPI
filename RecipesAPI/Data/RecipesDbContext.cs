@@ -20,6 +20,13 @@ namespace RecipesAPI.Data
         public DbSet<Comment> Comments { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Like>()
+       .HasKey(l => new { l.UserID, l.PostID });
+
+            modelBuilder.Entity<Follow>()
+               .HasKey(f => new { f.UserID, f.FollowerID });
+
+
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Comment>()
       .HasOne(c => c.User)
@@ -39,9 +46,7 @@ namespace RecipesAPI.Data
 
 
 
-            modelBuilder.Entity<Follow>()
-                .HasKey(f => new { f.UserID, f.FollowerID });
-
+           
             modelBuilder.Entity<Follow>()
                 .HasOne(f => f.User)
                 .WithMany(u => u.Following)

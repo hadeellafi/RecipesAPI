@@ -4,7 +4,6 @@ namespace RecipesAPI.Models.Entities
 {
     public class Like
     {
-        public int LikeID { get; set; }
         // Navigation properties
 
         [ForeignKey("UserID")]
