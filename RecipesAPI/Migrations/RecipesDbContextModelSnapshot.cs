@@ -198,6 +198,23 @@ namespace RecipesAPI.Migrations
                     b.HasIndex("FollowerID");
 
                     b.ToTable("Follows");
+
+                    b.HasData(
+                        new
+                        {
+                            UserID = "1",
+                            FollowerID = "2"
+                        },
+                        new
+                        {
+                            UserID = "1",
+                            FollowerID = "3"
+                        },
+                        new
+                        {
+                            UserID = "2",
+                            FollowerID = "3"
+                        });
                 });
 
             modelBuilder.Entity("RecipesAPI.Models.Entities.Ingredient", b =>
@@ -256,10 +273,6 @@ namespace RecipesAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Recipe")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -312,12 +325,19 @@ namespace RecipesAPI.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -367,6 +387,53 @@ namespace RecipesAPI.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "1",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "51a74b14-a2ce-438b-8c8a-c0fbb779ef4a",
+                            Email = "user1@gmail.com",
+                            EmailConfirmed = false,
+                            FullName = "User One",
+                            LockoutEnabled = false,
+                            PhoneNumberConfirmed = false,
+                            ProfilePicture = "pic1.jpg",
+                            SecurityStamp = "d00692e8-c949-45de-b373-dc5355766a75",
+                            TwoFactorEnabled = false,
+                            UserName = "User1"
+                        },
+                        new
+                        {
+                            Id = "2",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "9acaf8d5-0eae-448a-9714-68dea1ac2a11",
+                            Email = "user2@gmail.com",
+                            EmailConfirmed = false,
+                            FullName = "User Two",
+                            LockoutEnabled = false,
+                            PhoneNumberConfirmed = false,
+                            ProfilePicture = "pic2.jpg",
+                            SecurityStamp = "31b31813-2f3d-4f04-9a20-63bce792940f",
+                            TwoFactorEnabled = false,
+                            UserName = "User2"
+                        },
+                        new
+                        {
+                            Id = "3",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "818bcea9-f060-4c91-a3c3-d7a1e2568b43",
+                            Email = "user3@gmail.com",
+                            EmailConfirmed = false,
+                            FullName = "User Three",
+                            LockoutEnabled = false,
+                            PhoneNumberConfirmed = false,
+                            ProfilePicture = "pic3.jpg",
+                            SecurityStamp = "21d9b9bf-3abe-4b9e-8fac-267a49be688c",
+                            TwoFactorEnabled = false,
+                            UserName = "User3"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

@@ -1,15 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
-using RecipesAPI.Models.DTOs;
+﻿using RecipesAPI.Models.DTOs;
 
 namespace RecipesAPI.Models.Interfaces
 {
     public interface IUser
     {
-        public Task<UserDto> Register(RegisterUserDto data, ModelStateDictionary modelState);
+        public Task<BioDto> GetUserBioProfile(string userId, string currentUserId);
+        public Task<bool> FollowUser(string userId, string followerId);
+        public Task<bool> UnfollowUser(string userId, string followerId);
 
-        public Task<UserDto> LogIn(string username, string password);
+        public Task<List<UserBasicData>> GetFollowers(string userId);
+        public Task<List<UserBasicData>> GetFollowing(string userId);
 
-        //public Task<UserDto> GetUser(string username);
-        public Task Logout();
     }
 }

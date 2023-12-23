@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
+using RecipesAPI.Data;
 using RecipesAPI.Models.DTOs;
 using RecipesAPI.Models.Entities;
 using RecipesAPI.Models.Interfaces;
@@ -9,72 +9,174 @@ namespace RecipesAPI.Models.Services
 {
     public class UserService : IUser
     {
-        private UserManager<User> _userManager;
-        private SignInManager<User> _signInManager;
 
-        public UserService(UserManager<User> manager, SignInManager<User> signInManager)
+        private readonly RecipesDbContext _context;
+
+        public UserService(RecipesDbContext context)
         {
-            _userManager = manager;
-            _signInManager = signInManager;
+
+            this._context = context;
         }
-        public async Task<UserDto> LogIn(string username, string password)
+
+
+
+        public async Task<bool> FollowUser(string userId, string followerId)
         {
-            var result = await _signInManager.PasswordSignInAsync(username, password, true, false);
-
-            if (result.Succeeded)
+            // Check if the follow relationship already exists
+            var follow = await _context.Follows.FirstOrDefaultAsync(f => f.UserID == userId && f.FollowerID == followerId);
+            if (follow != null)
             {
-                var user = await _userManager.Users.SingleOrDefaultAsync(u => u.UserName == username);
-
-                return new UserDto()
-                {
-                    Id = user.Id,
-                    Username = user.UserName,
-                    Roles = await _userManager.GetRolesAsync(user),
-                    ProfilePicture=user.ProfilePicture
-                };
+                return false;
             }
-
-            return null;
-        }
-
-        public async Task Logout()
-        {
-            await _signInManager.SignOutAsync();
-        }
-
-        public async Task<UserDto> Register(RegisterUserDto data, ModelStateDictionary modelState)
-        {
-            var user = new User()
+            follow = new Follow
             {
-                UserName = data.Username,
-                Email = data.Email,
-                ProfilePicture= "https://storageaccbookimages.blob.core.windows.net/images/DefultPicture.png"
+                UserID = userId,
+                FollowerID = followerId
             };
 
-            var result = await _userManager.CreateAsync(user, data.Password);
+            _context.Follows.Add(follow);
+            await _context.SaveChangesAsync();
 
-            if (result.Succeeded)
+            return true;
+        }
+
+        public async Task<bool> UnfollowUser(string userId, string followerId)
+        {
+            // Find the follow relationship in the database
+            var follow = await _context.Follows.FirstOrDefaultAsync(f => f.UserID == userId && f.FollowerID == followerId);
+            if (follow == null)
             {
+                return false;
+            }
 
-                return new UserDto()
+            _context.Follows.Remove(follow);
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task<BioDto> GetUserBioProfile(string userId, string currentUserId)
+        {
+            var user = await _context.Users.Include(u => u.Followers).ThenInclude(f => f.User)
+                                            .Include(u => u.Following).ThenInclude(f => f.Follower)
+                                            .Include(u => u.Posts)
+                                            .FirstOrDefaultAsync(u => u.Id == userId);
+            if (user != null)
+            {
+                bool? isFollow = null;
+                if (userId != currentUserId)
+                {
+                    var follow = await _context.Follows.FirstOrDefaultAsync(f => f.UserID == currentUserId && f.FollowerID == userId);
+                    isFollow = follow != null;
+                }
+                var userDto = new BioDto
                 {
                     Id = user.Id,
                     Username = user.UserName,
-                    ProfilePicture = user.ProfilePicture 
+                    FullName = user.FullName,
+                    ProfilePicture = user.ProfilePicture,
+                    Description = user.Description,
+                    IsFollowing = isFollow,
+                    FollowingCount = user.Following?.Count ?? 0,
+                    FollowersCount = user.Followers?.Count ?? 0,
+                    PostsCount = user.Posts?.Count ?? 0
                 };
+
+                return userDto;
             }
-
-            foreach (var error in result.Errors)
-            {
-                var errorKey = error.Code.Contains("Password") ? nameof(data.Password) :
-                    error.Code.Contains("UserName") ? nameof(data.Username) :
-                     error.Code.Contains("Email") ? nameof(data.Email) :
-                     "";
-
-                modelState.AddModelError(errorKey, error.Description);
-            }
-
             return null;
         }
+
+       public async Task<List<UserBasicData>> GetFollowers(string userId)
+{
+    var user = await _context.Users.Include(u => u.Followers).ThenInclude(f => f.User)
+                                   .FirstOrDefaultAsync(u => u.Id == userId);
+    if (user != null)
+    {
+        var followers = user.Followers?.Select(f => new UserBasicData
+        {
+            UserID = f.User.Id,
+            UserName = f.User.UserName,
+            FullName = f.User.FullName,
+            ProfilePicture = f.User.ProfilePicture
+        }).ToList();
+
+        return followers;
     }
+    return null;
 }
+
+public async Task<List<UserBasicData>> GetFollowing(string userId)
+{
+    var user = await _context.Users.Include(u => u.Following).ThenInclude(f => f.Follower)
+                                   .FirstOrDefaultAsync(u => u.Id == userId);
+    if (user != null)
+    {
+        var following = user.Following?.Select(f => new UserBasicData
+        {
+            UserID = f.Follower.Id,
+            UserName = f.Follower.UserName,
+            FullName = f.Follower.FullName,
+            ProfilePicture = f.Follower.ProfilePicture
+        }).ToList();
+
+        return following;
+    }
+    return null;
+}
+
+        //public async Task<BioDto> GetUserBioProfile(string userId, string currentUserId)
+        //{
+        //    var user = await _context.Users.Include(u => u.Followers).ThenInclude(f => f.User)
+        //                                    .Include(u => u.Following).ThenInclude(f => f.Follower)
+        //                                    .FirstOrDefaultAsync(u => u.Id == userId);
+        //    if (user != null)
+        //    {
+        //        bool? isFollow=null;
+        //        if (userId != currentUserId)
+        //        { 
+        //            var follow = await _context.Follows.FirstOrDefaultAsync(f => f.UserID == currentUserId && f.FollowerID == userId);
+        //            if (follow != null)
+        //            {
+        //                isFollow = true;
+        //            }
+        //            else
+        //            { isFollow = false; }
+
+        //        }
+        //        var userDto = new BioDto
+        //        {
+        //            Id = user.Id,
+        //            Username = user.UserName,
+        //            FullName = user.FullName,
+        //            ProfilePicture = user.ProfilePicture,
+
+        //            Description = user.Description,
+        //            IsFollowing = isFollow,
+        //            ////user.Posts.Select(p => new PostDTO { /* map properties here */ }).ToList()
+        //            Followers = user.Followers?.Select(f => new FollowDto
+        //            {
+        //                UserID = f.UserID,
+        //                User = new UserDto { Id = f.User.Id, Username = f.User.UserName, ProfilePicture = f.User.ProfilePicture },
+        //                FollowerID = f.FollowerID,
+        //                //Follower = new UserDto { Id = f.Follower.Id, Username = f.Follower.UserName, ProfilePicture = f.Follower.ProfilePicture, Token = "" },
+        //                IsFollowing = f.UserID == currentUserId
+        //            }).ToList(),
+        //            Following = user.Following?.Select(f => new FollowDto
+        //            {
+        //                UserID = f.UserID,
+        //                //User = new UserDto { Id = f.User.Id, Username = f.User.UserName, ProfilePicture = f.User.ProfilePicture, Token = "" },
+        //                FollowerID = f.FollowerID,
+        //                Follower = new UserDto { Id = f.Follower.Id, Username = f.Follower.UserName, ProfilePicture = f.Follower.ProfilePicture },
+        //                IsFollowing = f.FollowerID == currentUserId
+        //            }).ToList()
+        //        };
+
+        //        return userDto;
+        //    }
+        //    return null;
+        //}
+    }
+
+}
+

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace RecipesAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class tables : Migration
+    public partial class first : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -30,7 +30,9 @@ namespace RecipesAPI.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProfilePicture = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -188,7 +190,6 @@ namespace RecipesAPI.Migrations
                     PostID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Recipe = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Photo = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DatePosted = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserID = table.Column<string>(type: "nvarchar(450)", nullable: false)
@@ -257,14 +258,12 @@ namespace RecipesAPI.Migrations
                 name: "Likes",
                 columns: table => new
                 {
-                    LikeID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
                     UserID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     PostID = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Likes", x => x.LikeID);
+                    table.PrimaryKey("PK_Likes", x => new { x.UserID, x.PostID });
                     table.ForeignKey(
                         name: "FK_Likes_AspNetUsers_UserID",
                         column: x => x.UserID,
@@ -363,11 +362,6 @@ namespace RecipesAPI.Migrations
                 name: "IX_Likes_PostID",
                 table: "Likes",
                 column: "PostID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Likes_UserID",
-                table: "Likes",
-                column: "UserID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Posts_UserID",

@@ -12,8 +12,8 @@ using RecipesAPI.Data;
 namespace RecipesAPI.Migrations
 {
     [DbContext(typeof(RecipesDbContext))]
-    [Migration("20231129154329_tables")]
-    partial class tables
+    [Migration("20231222215401_first")]
+    partial class first
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -231,24 +231,15 @@ namespace RecipesAPI.Migrations
 
             modelBuilder.Entity("RecipesAPI.Models.Entities.Like", b =>
                 {
-                    b.Property<int>("LikeID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LikeID"));
+                    b.Property<string>("UserID")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("PostID")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("LikeID");
+                    b.HasKey("UserID", "PostID");
 
                     b.HasIndex("PostID");
-
-                    b.HasIndex("UserID");
 
                     b.ToTable("Likes");
                 });
@@ -265,10 +256,6 @@ namespace RecipesAPI.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Photo")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Recipe")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -324,12 +311,19 @@ namespace RecipesAPI.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
