@@ -8,8 +8,8 @@ namespace RecipesAPI.Models.Interfaces
         public Task<bool> FollowUser(string userId, string followerId);
         public Task<bool> UnfollowUser(string userId, string followerId);
 
-        public Task<List<UserBasicData>> GetFollowers(string userId);
-        public Task<List<UserBasicData>> GetFollowing(string userId);
+        public Task<List<UserBasicData>> GetFollowers(string currentId, string userId);
+        public Task<List<UserBasicData>> GetFollowing(string currentId, string userId);
 
     }
 }

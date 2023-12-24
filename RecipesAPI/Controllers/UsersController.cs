@@ -39,16 +39,16 @@ namespace RecipesAPI.Controllers
 
 
         [HttpGet("GetFollowers/{userId}")]
-        public async Task<ActionResult<List<UserBasicData>>> GetFollowers(string userId)
+        public async Task<ActionResult<List<UserBasicData>>> GetFollowers(string currentId, string userId)
         {
-            var result = await userService.GetFollowers(userId);
+            var result = await userService.GetFollowers(currentId, userId);
 
             return result == null ? NotFound() : result;
         }
         [HttpGet("GetFollowing/{userId}")]
-        public async Task<ActionResult<List<UserBasicData>>> GetFollowing(string userId)
+        public async Task<ActionResult<List<UserBasicData>>> GetFollowing(string currentId, string userId)
         {
-            var result = await userService.GetFollowing(userId);
+            var result = await userService.GetFollowing(currentId,userId);
 
             return result == null ? NotFound() : result;
         }

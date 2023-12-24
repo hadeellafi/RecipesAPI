@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace RecipesAPI.Models.DTOs
+namespace RecipesAPI.Models.DTOs.AuthDtos
 {
     public class RegisterUserDto
     {
-       
+
         public required string Username { get; set; }
 
         public required string FullName { get; set; }

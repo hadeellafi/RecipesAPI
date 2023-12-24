@@ -87,43 +87,69 @@ namespace RecipesAPI.Models.Services
             return null;
         }
 
-       public async Task<List<UserBasicData>> GetFollowers(string userId)
-{
-    var user = await _context.Users.Include(u => u.Followers).ThenInclude(f => f.User)
-                                   .FirstOrDefaultAsync(u => u.Id == userId);
-    if (user != null)
-    {
-        var followers = user.Followers?.Select(f => new UserBasicData
+        //public async Task<List<UserBasicData>> GetFollowers(string userId)
+        //{
+        //    var user = await _context.Users.Include(u => u.Followers).ThenInclude(f => f.User)
+        //                                   .FirstOrDefaultAsync(u => u.Id == userId);
+        //    if (user != null)
+        //    {
+        //        var followers = user.Followers?.Select(async f => new UserBasicData
+        //        {
+        //            UserID = f.User.Id,
+        //            UserName = f.User.UserName,
+        //            FullName = f.User.FullName,
+        //            ProfilePicture = f.User.ProfilePicture,
+        //            IsFollowing = await _context.Follows.AnyAsync(follow => follow.UserID == userId && follow.FollowerID == f.User.Id) // Check if the current user is following the follower
+        //        }).ToList();
+
+        //        return followers;
+        //    }
+        //    return null;
+        //}
+        public async Task<List<UserBasicData>> GetFollowers(string currentId, string userId)
         {
-            UserID = f.User.Id,
-            UserName = f.User.UserName,
-            FullName = f.User.FullName,
-            ProfilePicture = f.User.ProfilePicture
-        }).ToList();
+            var user = await _context.Users.Include(u => u.Followers).ThenInclude(f => f.User)
+                                           .FirstOrDefaultAsync(u => u.Id == userId);
+            if (user != null)
+            {
+                var followerTasks = user.Followers?.Select(async f => new UserBasicData
+                {
+                    UserID = f.User.Id,
+                    UserName = f.User.UserName,
+                    FullName = f.User.FullName,
+                    ProfilePicture = f.User.ProfilePicture,
+                    IsFollowing = await _context.Follows.AnyAsync(follow => follow.UserID == currentId && follow.FollowerID == f.FollowerID)
+                });
 
-        return followers;
-    }
-    return null;
-}
+                var followers = followerTasks != null ? await Task.WhenAll(followerTasks) : null;
 
-public async Task<List<UserBasicData>> GetFollowing(string userId)
-{
-    var user = await _context.Users.Include(u => u.Following).ThenInclude(f => f.Follower)
-                                   .FirstOrDefaultAsync(u => u.Id == userId);
-    if (user != null)
-    {
-        var following = user.Following?.Select(f => new UserBasicData
+                return followers?.ToList();
+            }
+            return null;
+        }
+
+
+        public async Task<List<UserBasicData>> GetFollowing(string currentId, string userId)
         {
-            UserID = f.Follower.Id,
-            UserName = f.Follower.UserName,
-            FullName = f.Follower.FullName,
-            ProfilePicture = f.Follower.ProfilePicture
-        }).ToList();
+            var user = await _context.Users.Include(u => u.Following).ThenInclude(f => f.Follower)
+                                           .FirstOrDefaultAsync(u => u.Id == userId);
+            if (user != null)
+            {
+                var followingTasks = user.Following?.Select(async f => new UserBasicData
+                {
+                    UserID = f.Follower.Id,
+                    UserName = f.Follower.UserName,
+                    FullName = f.Follower.FullName,
+                    ProfilePicture = f.Follower.ProfilePicture,
+                    IsFollowing = await _context.Follows.AnyAsync(follow => follow.UserID == currentId && follow.FollowerID == f.FollowerID)
+                });
 
-        return following;
-    }
-    return null;
-}
+                var following = followingTasks != null ? await Task.WhenAll(followingTasks) : null;
+
+                return following?.ToList();
+            }
+            return null;
+        }
 
         //public async Task<BioDto> GetUserBioProfile(string userId, string currentUserId)
         //{

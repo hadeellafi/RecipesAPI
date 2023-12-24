@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using RecipesAPI.Models.DTOs;
+using RecipesAPI.Models.DTOs.AuthDtos;
 using RecipesAPI.Models.Interfaces;
 using System.Security.Claims;
 

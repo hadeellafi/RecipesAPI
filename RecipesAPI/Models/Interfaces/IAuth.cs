@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
-using RecipesAPI.Models.DTOs;
+using RecipesAPI.Models.DTOs.AuthDtos;
 using System.Security.Claims;
 
 namespace RecipesAPI.Models.Interfaces

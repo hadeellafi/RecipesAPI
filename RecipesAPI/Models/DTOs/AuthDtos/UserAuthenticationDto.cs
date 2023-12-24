@@ -1,6 +1,6 @@
 ﻿using RecipesAPI.Models.Entities;
 
-namespace RecipesAPI.Models.DTOs
+namespace RecipesAPI.Models.DTOs.AuthDtos
 {
     public class UserAuthenticationDto
     {

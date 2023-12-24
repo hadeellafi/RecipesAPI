@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using RecipesAPI.Data;
-using RecipesAPI.Models.DTOs;
+using RecipesAPI.Models.DTOs.AuthDtos;
 using RecipesAPI.Models.Entities;
 using RecipesAPI.Models.Interfaces;
 using System.Security.Claims;

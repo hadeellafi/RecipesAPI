@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace RecipesAPI.Models.DTOs
+namespace RecipesAPI.Models.DTOs.AuthDtos
 {
     public class LoginDataDto
     {
