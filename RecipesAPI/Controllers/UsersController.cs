@@ -48,10 +48,27 @@ namespace RecipesAPI.Controllers
         [HttpGet("GetFollowing/{userId}")]
         public async Task<ActionResult<List<UserBasicData>>> GetFollowing(string currentId, string userId)
         {
-            var result = await userService.GetFollowing(currentId,userId);
+            var result = await userService.GetFollowing(currentId, userId);
 
             return result == null ? NotFound() : result;
         }
-        
+        [HttpPost("UpdateProfilePicture/{userId}")]
+        public async Task<ActionResult<string>> updateProfilePicture(string userId, IFormFile ImageFile)
+        {
+            var result = await userService.updateProfilePicture(userId, ImageFile);
+            return result == null ? NotFound() : result;
+        }
+        [HttpGet("RemoveProfilePicture/{userId}")]
+        public async Task<ActionResult<string>> RemoveProfilePicture(string userId)
+        {
+            var result = await userService.DeleteProfilePicture(userId);
+            return result == null ? NotFound() : result;
+        }
+        [HttpPost("UpdateProfileDetail/{userId}")]
+        public async Task<ActionResult<bool>> UpdateProfileDetail(string userId, BioDto data)
+        {
+            var result = await userService.UpdateUserData(userId, data);
+            return result ?result : NotFound();
+        }
     }
 }

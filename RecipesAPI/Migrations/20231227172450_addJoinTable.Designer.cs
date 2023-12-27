@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RecipesAPI.Data;
 
@@ -11,9 +12,11 @@ using RecipesAPI.Data;
 namespace RecipesAPI.Migrations
 {
     [DbContext(typeof(RecipesDbContext))]
-    partial class RecipesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231227172450_addJoinTable")]
+    partial class addJoinTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -285,6 +288,7 @@ namespace RecipesAPI.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Photo")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RecipeDescription")
@@ -422,14 +426,14 @@ namespace RecipesAPI.Migrations
                         {
                             Id = "1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "8a5ef225-465c-4589-91f4-ad1447f687a9",
+                            ConcurrencyStamp = "702c46b1-7de0-4cc9-8fc1-2c3c340244b8",
                             Email = "user1@gmail.com",
                             EmailConfirmed = false,
                             FullName = "User One",
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
                             ProfilePicture = "pic1.jpg",
-                            SecurityStamp = "b414d4ee-0fe8-4ec0-84c3-088e5bcb499f",
+                            SecurityStamp = "c9822eb5-bf4c-4077-88a5-3d0a520f4ef1",
                             TwoFactorEnabled = false,
                             UserName = "User1"
                         },
@@ -437,14 +441,14 @@ namespace RecipesAPI.Migrations
                         {
                             Id = "2",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "bcc6d937-7930-4d02-8c91-1863322ea791",
+                            ConcurrencyStamp = "a6bf9bd3-f9b6-48e3-b5b6-3b3b3b0ded9b",
                             Email = "user2@gmail.com",
                             EmailConfirmed = false,
                             FullName = "User Two",
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
                             ProfilePicture = "pic2.jpg",
-                            SecurityStamp = "dfd9482b-22b4-477b-9f2c-1bcec0dcac59",
+                            SecurityStamp = "68373d67-a0ba-44ed-9dce-85fc32dafc1c",
                             TwoFactorEnabled = false,
                             UserName = "User2"
                         },
@@ -452,14 +456,14 @@ namespace RecipesAPI.Migrations
                         {
                             Id = "3",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "d142f1f5-5f2a-4716-bed9-25befe10ab5d",
+                            ConcurrencyStamp = "ea3ab494-31c5-4c60-8f7d-d24c7890c3a7",
                             Email = "user3@gmail.com",
                             EmailConfirmed = false,
                             FullName = "User Three",
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
                             ProfilePicture = "pic3.jpg",
-                            SecurityStamp = "3b5770a9-9374-4130-a949-710d463cf25d",
+                            SecurityStamp = "0cea98e6-9804-445b-a054-48ff34924510",
                             TwoFactorEnabled = false,
                             UserName = "User3"
                         });

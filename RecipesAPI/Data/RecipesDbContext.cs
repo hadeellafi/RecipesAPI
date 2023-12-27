@@ -15,6 +15,8 @@ namespace RecipesAPI.Data
         public DbSet<Follow> Follows { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<Ingredient> Ingredients { get; set; }
+        public DbSet<PostIngredient> PostIngredients { get; set; }
+
         public DbSet<Step> Steps { get; set; }
         public DbSet<Like> Likes { get; set; }
         public DbSet<Comment> Comments { get; set; }
@@ -25,7 +27,8 @@ namespace RecipesAPI.Data
 
             builder.Entity<Follow>()
                .HasKey(f => new { f.UserID, f.FollowerID });
-
+            builder.Entity<PostIngredient>()
+              .HasKey(f => new { f.PostID, f.IngredientID });
 
             base.OnModelCreating(builder);
             builder.Entity<Comment>()
@@ -70,6 +73,10 @@ namespace RecipesAPI.Data
 
             builder.Entity<Follow>().HasData(follow1, follow2, follow3);
 
+            var ingerdient1 = new Ingredient { IngredientID = 1, IngredientName = "Beef " };
+            var ingerdient2 = new Ingredient { IngredientID = 2, IngredientName = "Chicken " };
+            var ingerdient3 = new Ingredient { IngredientID = 3, IngredientName = "Cherry Tomatoes " };
+            builder.Entity<Ingredient>().HasData(ingerdient1, ingerdient2, ingerdient3);
         }
 
     }

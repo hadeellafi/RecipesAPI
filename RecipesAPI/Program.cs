@@ -21,6 +21,7 @@ namespace RecipesAPI
 
             builder.Services.AddTransient<IAuth, AuthService>();
             builder.Services.AddTransient<IUser, UserService>();
+            builder.Services.AddTransient<IPost, PostService>();
 
             builder.Services.AddIdentity<User, IdentityRole>(options =>
             {

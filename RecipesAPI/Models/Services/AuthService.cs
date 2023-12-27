@@ -70,7 +70,7 @@ namespace RecipesAPI.Models.Services
             {
                 UserName = registerUser.Username,
                 Email = registerUser.Email,
-                ProfilePicture = "https://storageaccbookimages.blob.core.windows.net/images/user.jpeg",
+                ProfilePicture = "https://projectsstorage2001.blob.core.windows.net/recipeimages/default_avatar.jpg",
                 FullName = registerUser.FullName,
                 Description = ""
             };

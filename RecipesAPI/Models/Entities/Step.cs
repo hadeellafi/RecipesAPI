@@ -5,8 +5,7 @@ namespace RecipesAPI.Models.Entities
     public class Step
     {
         public int StepID { get; set; }
-        public int StepNumber { get; set; }
-        public string Instruction { get; set; }
+        public required string Instruction { get; set; }
         // Navigation properties
 
         [ForeignKey("PostID")]

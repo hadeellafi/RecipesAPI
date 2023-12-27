@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using RecipesAPI.Data;
 using RecipesAPI.Models.DTOs;
 using RecipesAPI.Models.Entities;
@@ -11,11 +14,14 @@ namespace RecipesAPI.Models.Services
     {
 
         private readonly RecipesDbContext _context;
+        private readonly IConfiguration _configuration;
 
-        public UserService(RecipesDbContext context)
+
+        public UserService(RecipesDbContext context, IConfiguration configuration)
         {
 
-            this._context = context;
+            _context = context;
+            _configuration = configuration;
         }
 
 
@@ -149,6 +155,72 @@ namespace RecipesAPI.Models.Services
                 return following?.ToList();
             }
             return null;
+        }
+
+        public async Task<string> DeleteProfilePicture(string userId)
+        {
+            User user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            if (user != null)
+            {
+                user.ProfilePicture = "https://projectsstorage2001.blob.core.windows.net/recipeimages/default_avatar.jpg";
+                await _context.SaveChangesAsync();
+                return user.ProfilePicture;
+            }
+            return null;
+                }
+
+        public async Task<string> updateProfilePicture(string userId, IFormFile ImageFile)
+        {
+           var user=await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            
+                if (user != null) {
+                user.ProfilePicture = await ReturnUrlOfImage(ImageFile);
+                await _context.SaveChangesAsync();
+                return user.ProfilePicture;
+
+            }
+            return null;
+            
+        }
+        public async Task<string> ReturnUrlOfImage(IFormFile file)
+        {
+
+            // Create a public container
+            BlobContainerClient blobContainerClient = new BlobContainerClient(_configuration.GetConnectionString("StorageAccount"), "recipeimages");
+            blobContainerClient.CreateIfNotExists(PublicAccessType.Blob);
+
+            // Create if images container not exist 
+            await blobContainerClient.CreateIfNotExistsAsync();
+
+
+            BlobClient blobClient = blobContainerClient.GetBlobClient(file.FileName);
+
+            using var fileStream = file.OpenReadStream();
+
+            BlobUploadOptions blobUploadOptions = new BlobUploadOptions()
+            {
+                HttpHeaders = new BlobHttpHeaders { ContentType = file.ContentType }
+            };
+
+            if (!blobClient.Exists())
+            {
+                await blobClient.UploadAsync(fileStream, blobUploadOptions);
+            }
+
+            return blobClient.Uri.ToString();
+
+        }
+        public async Task<bool> UpdateUserData(string userId,BioDto bio)
+        {
+            var user=await _context.Users.FirstOrDefaultAsync(u=>u.Id == userId);
+            if (user != null)
+            {
+                user.FullName = bio.FullName;
+                user.Description = bio.Description;
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            return false;
         }
 
         //public async Task<BioDto> GetUserBioProfile(string userId, string currentUserId)

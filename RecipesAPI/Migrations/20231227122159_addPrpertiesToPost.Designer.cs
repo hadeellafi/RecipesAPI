@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RecipesAPI.Data;
 
@@ -11,9 +12,11 @@ using RecipesAPI.Data;
 namespace RecipesAPI.Migrations
 {
     [DbContext(typeof(RecipesDbContext))]
-    partial class RecipesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231227122159_addPrpertiesToPost")]
+    partial class addPrpertiesToPost
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -232,23 +235,6 @@ namespace RecipesAPI.Migrations
                     b.HasKey("IngredientID");
 
                     b.ToTable("Ingredients");
-
-                    b.HasData(
-                        new
-                        {
-                            IngredientID = 1,
-                            IngredientName = "Beef "
-                        },
-                        new
-                        {
-                            IngredientID = 2,
-                            IngredientName = "Chicken "
-                        },
-                        new
-                        {
-                            IngredientID = 3,
-                            IngredientName = "Cherry Tomatoes "
-                        });
                 });
 
             modelBuilder.Entity("RecipesAPI.Models.Entities.Like", b =>
@@ -280,14 +266,15 @@ namespace RecipesAPI.Migrations
                     b.Property<bool>("IsUpdated")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("Photo")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Photo")
+                    b.Property<string>("RecipeDescription")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("RecipeDescription")
+                    b.Property<string>("Title")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserID")
@@ -317,7 +304,7 @@ namespace RecipesAPI.Migrations
 
                     b.HasIndex("IngredientID");
 
-                    b.ToTable("PostIngredients");
+                    b.ToTable("PostIngredient");
                 });
 
             modelBuilder.Entity("RecipesAPI.Models.Entities.Step", b =>
@@ -333,6 +320,9 @@ namespace RecipesAPI.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("PostID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StepNumber")
                         .HasColumnType("int");
 
                     b.HasKey("StepID");
@@ -422,14 +412,14 @@ namespace RecipesAPI.Migrations
                         {
                             Id = "1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "8a5ef225-465c-4589-91f4-ad1447f687a9",
+                            ConcurrencyStamp = "f5aca6c0-4319-4447-a831-915acfaaa22d",
                             Email = "user1@gmail.com",
                             EmailConfirmed = false,
                             FullName = "User One",
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
                             ProfilePicture = "pic1.jpg",
-                            SecurityStamp = "b414d4ee-0fe8-4ec0-84c3-088e5bcb499f",
+                            SecurityStamp = "a059cbaa-d2e7-4777-9657-5b9fdae0bf40",
                             TwoFactorEnabled = false,
                             UserName = "User1"
                         },
@@ -437,14 +427,14 @@ namespace RecipesAPI.Migrations
                         {
                             Id = "2",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "bcc6d937-7930-4d02-8c91-1863322ea791",
+                            ConcurrencyStamp = "c73f89c9-06c6-47ad-b41a-e35a6b868124",
                             Email = "user2@gmail.com",
                             EmailConfirmed = false,
                             FullName = "User Two",
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
                             ProfilePicture = "pic2.jpg",
-                            SecurityStamp = "dfd9482b-22b4-477b-9f2c-1bcec0dcac59",
+                            SecurityStamp = "26f6555a-4902-4e6f-8734-fd985b286a24",
                             TwoFactorEnabled = false,
                             UserName = "User2"
                         },
@@ -452,14 +442,14 @@ namespace RecipesAPI.Migrations
                         {
                             Id = "3",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "d142f1f5-5f2a-4716-bed9-25befe10ab5d",
+                            ConcurrencyStamp = "9e2d46a5-d3b6-4ea3-8e32-2a9174543321",
                             Email = "user3@gmail.com",
                             EmailConfirmed = false,
                             FullName = "User Three",
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
                             ProfilePicture = "pic3.jpg",
-                            SecurityStamp = "3b5770a9-9374-4130-a949-710d463cf25d",
+                            SecurityStamp = "7fa5e5aa-3595-4970-88c5-4948d5f3d22e",
                             TwoFactorEnabled = false,
                             UserName = "User3"
                         });
